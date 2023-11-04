@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+
+{% block 'title' %}
+    Digital clock with channels.
+{% endblock %}
+
+{% block 'content' %}
+
+    
+    <div class="d-flex justify-content-center  w-100 h-100">   
+        <div class="d-flex flex-column text-center  align-items-center"    style="margin: 10%; width: 500px;">   
+            <div class="clock" style="font-size: 60px; color: #999; padding-top: 20px; font-weight: bold; ">
+                <p id="clock"></p>
+            </div>
+            <div>
+                <select name="select" id="select" class="btn btn-outline-secondary w-100  mt-3">
+                    {% for country in countries %}
+                            <option value="{{country}}" >{{country}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const selectElement = document.getElementById('select');
+        
+        const optionValue = selectElement.value;
+        
+        
+        
+        
+        const socket = new WebSocket('ws://127.0.0.1:8000/ws/myconsumer/' + optionValue + '/');
+        
+        
+        const storedSelection = localStorage.getItem('selectedOption');
+        
+        if (storedSelection) {
+            selectElement.value = storedSelection;
+        }
+        
+        selectElement.addEventListener('change', function() {
+            var optionValue = selectElement.value
+            socket.send(JSON.stringify({
+                'option': optionValue,
+            }));
+        
+
+            // Almacena la selección en el almacenamiento local
+            localStorage.setItem('selectedOption', optionValue);
+            
+        });
+        
+        function sendMsj() {
+            var optionValue = selectElement.value
+            console.log('mensaje enviandose ' + optionValue);
+
+            socket.send(JSON.stringify({'option': optionValue}));
+        }
+
+        
+        socket.onopen = function(e) {
+            // Conexión abierta, enviar el valor seleccionado
+            var optionValue = selectElement.value;
+            socket.send(JSON.stringify({
+                'option': optionValue,
+            }));
+        
+            console.log('Ws abierto')
+        
+            if (socket.readyState === WebSocket.OPEN) {
+                setInterval(() => {
+                    sendMsj()
+                }, 1000);
+            } 
+        
+        };
+        
+        socket.onmessage = function(data) {
+        
+            var data = JSON.parse(data.data);
+            var option = data.message;
+            var hr = data.hr;
+            var sc = data.sc;
+            var mn = data.mn;
+        
+            clock = document.getElementById('clock');
+        
+            clock.innerHTML = `<span id="hr">${hr}</span> : <span id="mn">${mn}</span> : <span id="sc">${sc}</span>`
+        };
+        
+        socket.onclose = function(e) {
+            // Conexión cerrada
+            console.log('Ws cerrado')
+        };
+    </script>
+    
+{% endblock %}
+
+
+

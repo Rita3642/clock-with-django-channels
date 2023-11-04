@@ -1,0 +1,29 @@
+{
+    "zonas_horarias": [
+        "America/New_York",
+        "America/Los_Angeles",
+        "America/Chicago",
+        "Europe/London",
+        "Europe/Paris",
+        "Asia/Tokyo",
+        "Australia/Sydney",
+        "Africa/Cairo",
+        "Pacific/Honolulu",
+        "Asia/Dubai",
+        "America/Buenos_Aires",
+        "America/Sao_Paulo",
+        "America/Santiago",
+        "America/Bogota",
+        "America/Mexico_City",
+        "America/Lima",
+        "America/Caracas",
+        "America/La_Paz",
+        "America/Asuncion",
+        "America/Guayaquil",
+        "America/Managua",
+        "America/Panama",
+        "America/Santo_Domingo",
+        "Etc/UTC"
+    ]
+}
+
